@@ -3,17 +3,17 @@ require "cgpio/version"
 module Cgpio
     class Gpio
 
-        attr_reader :pin
+        attr_reader :nr
 
-        def initialize(pin, options={})
+        def initialize(nr, options={})
             options = {
                 direction: :out
             }.merge(options)
 
-            @pin = pin
+            @nr = nr
 
             # this will export the pin
-            setup @pin
+            setup @nr
 
             # set the initial direction
             self.direction = options[:direction]

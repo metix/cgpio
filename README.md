@@ -77,7 +77,6 @@ led.on
 led.value = false
 # or
 led.off
-
 ```
 
 ### Read value of port
@@ -87,6 +86,11 @@ val = switch.on?
 val = switch.off?
 ```
 
+### Get static info about port
+```ruby
+# get port number
+nr = port.nr
+```
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
