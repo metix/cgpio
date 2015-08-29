@@ -2,19 +2,19 @@
 
 A simple GPIO Wrapper in Ruby (which uses C to access the SYSFS structures)
 
-Tested with Beaglebone Black.
+Tested only with Beaglebone Black.
 
 WARN: the gem is not stable yet!
 
 ## Features
 * set/get value
-* set direction
+* set/get direction
 
 ## Usage
 ### Example
 ```
 # setup a new port (output is default)
-led = Cgpio::Gpio.new(48);
+led = Cgpio::Gpio.new(48)
 
 # enable led
 led.on
@@ -23,7 +23,7 @@ led.on
 ### Initializing a port
 ```
 # setup a new port (output is default)
-led = Cgpio::Gpio.new(48);
+led = Cgpio::Gpio.new(48)
 
 # setup a new input port
 switch = Cgpio::Gpio.new(66, direction: :in)
@@ -36,6 +36,12 @@ led.direction = :out
 
 # port as input
 switch.direction = :in
+```
+
+### Get direction of port
+```
+# returns :in or :out
+dir = switch.direction
 ```
 
 ### Set value of port

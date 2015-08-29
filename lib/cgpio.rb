@@ -16,7 +16,7 @@ module Cgpio
             setup @pin
 
             # set the initial direction
-            direction = options[:direction]
+            self.direction = options[:direction]
         end
 
         def direction=(direction)
@@ -30,19 +30,30 @@ module Cgpio
             end
         end
 
+        def direction
+            if (get_direction == 0x01)
+                :out
+            elsif (get_direction == 0x02)
+                :in
+            else
+                raise "unknown gpio direction"
+            end
+        end
+
         def on
-            value = true
+            self.value = true
         end
 
         def off
-            value = false
+            self.value = false
+        end
 
         def on?
-            value
+            self.value
         end
 
         def off?
-            !value
+            !self.value
         end
     end
 end

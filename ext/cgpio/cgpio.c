@@ -45,6 +45,25 @@ cgpio_set_direction(VALUE self, VALUE p_dir)
 }
 
 static VALUE
+cgpio_get_direction(VALUE self)
+{
+    struct Cgpio *ptr;
+    int dir;
+
+    Data_Get_Struct(self, struct Cgpio, ptr);
+
+    dir = gpio_get_mode(ptr->gpio);
+
+    if (dir == -1)
+    {
+        rb_raise(rb_eRuntimeError, "unable to read direction of gpio");
+        return self;
+    }
+
+    return INT2NUM(dir);
+}
+
+static VALUE
 cgpio_set_value(VALUE self, VALUE p_value)
 {
     struct Cgpio *ptr;
@@ -118,6 +137,7 @@ Init_cgpio()
     rb_define_alloc_func(class_Gpio, cgpio_alloc);
     rb_define_private_method(class_Gpio, "setup", cgpio_setup, 1);
     rb_define_private_method(class_Gpio, "set_direction", cgpio_set_direction, 1);
+    rb_define_private_method(class_Gpio, "get_direction", cgpio_get_direction, 0);
     rb_define_method(class_Gpio, "value=", cgpio_set_value, 1);
     rb_define_method(class_Gpio, "value", cgpio_get_value, 0);
 }

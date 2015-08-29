@@ -141,7 +141,7 @@ gpio_mode(struct Gpio *gpio, int mode)
 {
 	char buf[BUF_SIZE];
 	int fd, written = -1;
-	
+
 	// open the direction file of the gpio
 	sprintf(buf, GPIO_PATH "gpio%d/direction", gpio->nr);
 
@@ -158,8 +158,38 @@ gpio_mode(struct Gpio *gpio, int mode)
 		written = write(fd, "out", 3);
 	}
 
+	close(fd);
+
 	if (written == -1)
 		return -1;
 
 	return 0;
+}
+
+int
+gpio_get_mode(struct Gpio *gpio)
+{
+	char buf[BUF_SIZE];
+	int fd, readb = -1;
+
+	// open the direction file of the gpio
+	sprintf(buf, GPIO_PATH "gpio%d/direction", gpio->nr);
+
+	fd = open(buf, O_RDONLY);
+	if (fd == -1)
+		return -1;
+
+	readb = read(fd, buf, 4);
+
+	close(fd);
+
+	if (readb == -1)
+		return -1;
+
+	if (buf[0] == 'o')
+		return GPIO_MODE_OUTPUT;
+	else if (buf[0] == 'i')
+		return GPIO_MODE_INPUT;
+
+	return -1;
 }
