@@ -118,6 +118,25 @@ gpio_set(struct Gpio *gpio, int value)
 }
 
 int
+gpio_get(struct Gpio *gpio)
+{
+	int readb;
+	char buf[1];
+
+	readb = read(gpio->fd_value, buf, 1);
+
+	if (readb == -1)
+	{
+		lseek(gpio->fd_value, 0, SEEK_SET);
+		return -1;
+	}
+
+	lseek(gpio->fd_value, 0, SEEK_SET);
+
+	return buf[0] == '1';
+}
+
+int
 gpio_mode(struct Gpio *gpio, int mode)
 {
 	char buf[BUF_SIZE];

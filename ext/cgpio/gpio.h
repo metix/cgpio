@@ -12,6 +12,7 @@ struct Gpio
 
 extern struct Gpio *gpio_setup(int n);
 extern int gpio_set(struct Gpio *gpio, int value);
+extern int gpio_get(struct Gpio *gpio);
 extern int gpio_mode(struct Gpio *gpio, int mode);
 extern void gpio_close(struct Gpio *gpio, int unexport);
 

@@ -62,7 +62,7 @@ cgpio_set_value(VALUE self, VALUE p_value)
 
     return self;
 }
-/*
+
 static VALUE
 cgpio_get_value(VALUE self)
 {
@@ -79,7 +79,6 @@ cgpio_get_value(VALUE self)
 
     return Qfalse;
 }
-*/
 
 static void
 cgpio_free(void *p)
@@ -120,4 +119,5 @@ Init_cgpio()
     rb_define_private_method(class_Gpio, "setup", cgpio_setup, 1);
     rb_define_private_method(class_Gpio, "set_direction", cgpio_set_direction, 1);
     rb_define_method(class_Gpio, "value=", cgpio_set_value, 1);
+    rb_define_method(class_Gpio, "value", cgpio_get_value, 0);
 }
