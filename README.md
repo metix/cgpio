@@ -16,8 +16,11 @@ WARN: the gem is not stable yet!
 # setup a new port (output is default)
 led = Cgpio::Gpio.new(48)
 
-# enable led
-led.on
+# setup a new input port
+switch = Cgpio::Gpio.new(66, direction: :in)
+
+# connect led with switch
+loop do led.value = switch.value end
 ```
 
 ### Initializing a port
@@ -28,6 +31,10 @@ led = Cgpio::Gpio.new(48)
 # setup a new input port
 switch = Cgpio::Gpio.new(66, direction: :in)
 ```
+
+Note: The initialization will export the port (/sys/class/gpio/export) if it is
+not exported already. But when the GC (Garbage Collector) deletes this object,
+the port will not be unexported.
 
 ### Set direction of port
 ```
