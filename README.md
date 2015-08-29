@@ -12,7 +12,9 @@ WARN: the gem is not stable yet!
 
 ## Usage
 ### Example
-```
+```ruby
+require 'cgpio'
+
 # setup a new port (output is default)
 led = Cgpio::Gpio.new(48)
 
@@ -24,7 +26,7 @@ loop do led.value = switch.value end
 ```
 
 ### Initializing a port
-```
+```ruby
 # setup a new port (output is default)
 led = Cgpio::Gpio.new(48)
 
@@ -37,7 +39,7 @@ not exported already. But when the GC (Garbage Collector) deletes this object,
 the port will not be unexported.
 
 ### Set direction of port
-```
+```ruby
 # port as output
 led.direction = :out
 
@@ -46,13 +48,13 @@ switch.direction = :in
 ```
 
 ### Get direction of port
-```
+```ruby
 # returns :in or :out
 dir = switch.direction
 ```
 
 ### Set value of port
-```
+```ruby
 # set value to true
 led.value = true
 # or
@@ -66,7 +68,7 @@ led.off
 ```
 
 ### Read value of port
-```
+```ruby
 val = switch.value
 val = switch.on?
 val = switch.off?
