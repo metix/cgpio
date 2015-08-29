@@ -42,7 +42,7 @@ gpio_exists(int n)
 }
 
 struct Gpio*
-gpio_init(int n)
+gpio_setup(int n)
 {
 	char buf[BUF_SIZE];
 	int fd;

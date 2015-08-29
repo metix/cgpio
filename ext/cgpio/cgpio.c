@@ -7,7 +7,7 @@ struct Cgpio
 };
 
 static VALUE
-cgpio_init(VALUE self, VALUE p_port)
+cgpio_setup(VALUE self, VALUE p_port)
 {
     struct Cgpio *ptr;
     struct Gpio *gpio;
@@ -16,7 +16,7 @@ cgpio_init(VALUE self, VALUE p_port)
 
     Data_Get_Struct(self, struct Cgpio, ptr);
 
-    gpio = gpio_init(port);
+    gpio = gpio_setup(port);
 
     if (gpio == NULL)
             rb_raise(rb_eRuntimeError, "unable to export gpio %d", port);
@@ -35,12 +35,6 @@ cgpio_set_direction(VALUE self, VALUE p_dir)
     dir = NUM2INT(p_dir);
 
     Data_Get_Struct(self, struct Cgpio, ptr);
-
-    if (dir != GPIO_MODE_OUTPUT && dir != GPIO_MODE_INPUT)
-    {
-        rb_raise(rb_eRuntimeError, "unsupported direction mode at gpio");
-        return self;
-    }
 
     if (gpio_mode(ptr->gpio, dir) == -1)
     {
@@ -123,7 +117,7 @@ Init_cgpio()
     class_Gpio = rb_const_get(module_Cgpio, rb_intern("Gpio"));
 
     rb_define_alloc_func(class_Gpio, cgpio_alloc);
-    rb_define_method(class_Gpio, "initialize", cgpio_init, 1);
+    rb_define_private_method(class_Gpio, "setup", cgpio_setup, 1);
+    rb_define_private_method(class_Gpio, "set_direction", cgpio_set_direction, 1);
     rb_define_method(class_Gpio, "value=", cgpio_set_value, 1);
-    rb_define_method(class_Gpio, "direction=", cgpio_set_direction, 1);
 }

@@ -11,4 +11,5 @@ require "cgpio"
 # Pry.start
 
 require "irb"
+require "irb/completion"
 IRB.start
