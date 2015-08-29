@@ -9,10 +9,11 @@ WARN: the gem is not stable yet!
 ## Features
 * set/get value
 * set direction
+
 ## Usage
 ### Example
 ```
-# create a new port (default is output)
+# setup a new port (output is default)
 led = Cgpio::Gpio.new(48);
 
 # enable led
@@ -21,11 +22,20 @@ led.on
 
 ### Initializing a port
 ```
-# create a new port (default is output)
+# setup a new port (output is default)
 led = Cgpio::Gpio.new(48);
 
-# create a new input port
-switch = Cgpio::Gpio.new(66, direction: :input)
+# setup a new input port
+switch = Cgpio::Gpio.new(66, direction: :in)
+```
+
+### Set direction of port
+```
+# port as output
+led.direction = :out
+
+# port as input
+switch.direction = :in
 ```
 
 ### Set value of port
