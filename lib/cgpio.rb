@@ -12,8 +12,7 @@ module Cgpio
 
             @pin = pin
 
-            # this will export the pin and open
-            # a filedescriptor for the value of the gpio
+            # this will export the pin
             setup @pin
 
             # set the initial direction
@@ -29,6 +28,21 @@ module Cgpio
             else
                 raise "unsupported gpio direction. use :out or :in"
             end
+        end
+
+        def on
+            value = true
+        end
+
+        def off
+            value = false
+
+        def on?
+            value
+        end
+
+        def off?
+            !value
         end
     end
 end
