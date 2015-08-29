@@ -2,6 +2,14 @@
 
 A simple GPIO Wrapper in Ruby (which uses C to access the SYSFS structures)
 
+```ruby
+require 'cgpio'
+
+# switch on a led on port 48
+led = Cgpio::Gpio.new(48)
+led.on
+```
+
 Tested only with Beaglebone Black.
 
 WARN: the gem is not stable yet!
@@ -9,6 +17,11 @@ WARN: the gem is not stable yet!
 ## Features
 * set/get value
 * set/get direction
+
+## Installation
+```
+gem install cgpio
+```
 
 ## Usage
 ### Example
