@@ -6,7 +6,10 @@
 
 struct Gpio
 {
+    /* file descriptor of the /sys/value/gpio%d/value file */
     int fd_value;
+
+    /* number of the gpio */
     int nr;
 };
 

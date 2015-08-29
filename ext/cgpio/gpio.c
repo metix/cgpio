@@ -141,7 +141,7 @@ gpio_mode(struct Gpio *gpio, int mode)
 {
 	char buf[BUF_SIZE];
 	int fd, written = -1;
-
+	
 	// open the direction file of the gpio
 	sprintf(buf, GPIO_PATH "gpio%d/direction", gpio->nr);
 
