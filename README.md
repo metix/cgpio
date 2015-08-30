@@ -10,7 +10,9 @@ led = Cgpio::Gpio.new(48)
 led.on
 ```
 
-Tested only with [Beaglebone Black](http://beagleboard.org/black)  with Linux-Kernel Version "4.1.6"
+Tested with Linux-Kernel Version "4.1.6" on
+* [Beaglebone Black](http://beagleboard.org/black)  
+* [Raspberry Pi Model B+](https://www.raspberrypi.org/products/model-b-plus/)
 
 WARN: the gem is not stable yet!
 
