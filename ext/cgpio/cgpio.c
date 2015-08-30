@@ -126,18 +126,18 @@ void
 Init_cgpio()
 {
     VALUE module_Cgpio;
-    VALUE class_Gpio;
+    VALUE class_RealGpio;
 
     // get module
     module_Cgpio = rb_const_get(rb_cObject, rb_intern("Cgpio"));
 
     // get class
-    class_Gpio = rb_const_get(module_Cgpio, rb_intern("Gpio"));
+    class_RealGpio = rb_const_get(module_Cgpio, rb_intern("RealGpio"));
 
-    rb_define_alloc_func(class_Gpio, cgpio_alloc);
-    rb_define_private_method(class_Gpio, "setup", cgpio_setup, 1);
-    rb_define_private_method(class_Gpio, "set_direction", cgpio_set_direction, 1);
-    rb_define_private_method(class_Gpio, "get_direction", cgpio_get_direction, 0);
-    rb_define_method(class_Gpio, "value=", cgpio_set_value, 1);
-    rb_define_method(class_Gpio, "value", cgpio_get_value, 0);
+    rb_define_alloc_func(class_RealGpio, cgpio_alloc);
+    rb_define_private_method(class_RealGpio, "setup", cgpio_setup, 1);
+    rb_define_private_method(class_RealGpio, "set_direction", cgpio_set_direction, 1);
+    rb_define_private_method(class_RealGpio, "get_direction", cgpio_get_direction, 0);
+    rb_define_method(class_RealGpio, "value=", cgpio_set_value, 1);
+    rb_define_method(class_RealGpio, "value", cgpio_get_value, 0);
 }

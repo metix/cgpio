@@ -93,6 +93,20 @@ val = switch.off?
 # get port number
 nr = port.nr
 ```
+
+## Virtual GPIO
+When you want to run your program on a hardware which don't have GPIO, you can
+use virtual GPIOs.
+
+For this you have to configure the Cgpio before you use it:
+```ruby
+# put this at the beginning of your program
+Cgpio.configure do |config|
+    # use virtual gpio instead of real gpio
+    config.virtual = true
+end
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
