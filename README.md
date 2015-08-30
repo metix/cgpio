@@ -19,6 +19,7 @@ WARN: the gem is not stable yet!
 ## Features
 * set/get value
 * set/get direction
+* virtual GPIO
 
 ## Installation
 ```
@@ -94,7 +95,7 @@ val = switch.off?
 nr = port.nr
 ```
 
-## Virtual GPIO
+### Virtual GPIO
 When you want to run your program on a hardware which don't have GPIO, you can
 use virtual GPIOs.
 
