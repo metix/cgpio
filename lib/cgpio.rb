@@ -21,4 +21,12 @@ module Cgpio
     def self.configure
         yield configuration
     end
+
+    def self.new(nr, options={})
+        if Cgpio.configuration.virtual
+            Cgpio::VirtualGpio.new(nr, options)
+        else
+            Cgpio::RealGpio.new(nr, options)
+        end
+    end
 end

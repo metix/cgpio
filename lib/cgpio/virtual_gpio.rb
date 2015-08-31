@@ -1,26 +1,20 @@
-class Cgpio::VirtualGpio
-    attr_reader :nr
+class Cgpio::VirtualGpio < Cgpio::Gpio
 
-    def initialize(nr, options={})
-        options = {
-            direction: :out
-        }.merge(options)
+    def initialize(nr, options)
+        super(nr, options)
 
-        @nr = nr
         @value = false
 
         # set the initial direction
-        self.direction = options[:direction]
+        self.direction = @options[:direction]
     end
 
     def direction=(direction)
-        if direction == :out
-            @direction = 0x01
-        elsif direction == :in
-            @direction = 0x02
-        else
+        if direction != :in && direction != :out
             raise "unsupported gpio direction. use :out or :in"
         end
+
+        @direction = direction
     end
 
     def value

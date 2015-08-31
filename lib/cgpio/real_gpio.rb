@@ -1,14 +1,7 @@
-class Cgpio::RealGpio
+class Cgpio::RealGpio < Cgpio::Gpio
 
-    attr_reader :nr
-
-    def initialize(nr, options={})
-        options = {
-            direction: :out
-        }.merge(options)
-
-        @nr = nr
-
+    def initialize(nr, options)
+        super(nr, options)
         # this will export the pin
         setup @nr
 

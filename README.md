@@ -6,7 +6,7 @@ A simple GPIO Wrapper in Ruby (which uses C to access the SYSFS structures)
 require 'cgpio'
 
 # switch on a led on port 48
-led = Cgpio::Gpio.new(48)
+led = Cgpio.new(48)
 led.on
 ```
 
@@ -32,10 +32,10 @@ gem install cgpio
 require 'cgpio'
 
 # setup a new port (output is default)
-led = Cgpio::Gpio.new(48)
+led = Cgpio.new(48)
 
 # setup a new input port
-switch = Cgpio::Gpio.new(66, direction: :in)
+switch = Cgpio.new(66, direction: :in)
 
 # connect led with switch
 loop do led.value = switch.value end
@@ -44,10 +44,10 @@ loop do led.value = switch.value end
 ### Initializing a port
 ```ruby
 # setup a new port (output is default)
-led = Cgpio::Gpio.new(48)
+led = Cgpio.new(48)
 
 # setup a new input port
-switch = Cgpio::Gpio.new(66, direction: :in)
+switch = Cgpio.new(66, direction: :in)
 ```
 
 Note: The initialization will export the port (/sys/class/gpio/export) if it is

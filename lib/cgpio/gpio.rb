@@ -1,12 +1,14 @@
-require 'cgpio/real_gpio'
-require 'cgpio/virtual_gpio'
-
 class Cgpio::Gpio
-    def self.new(nr, options={})
-        if Cgpio.configuration.virtual
-            Cgpio::VirtualGpio.new(nr, options)
-        else
-            Cgpio::RealGpio.new(nr, options)
-        end
+    attr_reader :nr
+
+    def initialize(nr, options)
+        @options = {
+            direction: :out
+        }.merge(options)
+
+        @nr = nr
     end
 end
+
+require 'cgpio/real_gpio'
+require 'cgpio/virtual_gpio'
