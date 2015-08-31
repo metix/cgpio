@@ -108,6 +108,16 @@ Cgpio.configure do |config|
 end
 ```
 
+#### Value changed event
+You can can define a function which will be called when the value of the virtual
+GPIO changes:
+```ruby
+# will be called when value changes
+led.value_change do |new, old|
+    puts "led change value from #{old} to #{new}"
+end
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

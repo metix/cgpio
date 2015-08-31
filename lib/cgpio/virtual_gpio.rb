@@ -4,6 +4,7 @@ class Cgpio::VirtualGpio < Cgpio::Gpio
         super(nr, options)
 
         @value = false
+        @events = {}
 
         # set the initial direction
         self.direction = @options[:direction]
@@ -22,6 +23,10 @@ class Cgpio::VirtualGpio < Cgpio::Gpio
     end
 
     def value=(val)
+        if @value != val && @events[:value_change]
+            @events[:value_change].call(val, @value)
+        end
+
         @value = val
     end
 
@@ -43,5 +48,9 @@ class Cgpio::VirtualGpio < Cgpio::Gpio
 
     def off?
         !value
+    end
+
+    def value_change(&block)
+        @events[:value_change] = block
     end
 end
