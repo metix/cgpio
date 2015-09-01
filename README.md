@@ -47,6 +47,9 @@ loop do led.value = switch.value end
 # setup a new port (output is default)
 led = Cgpio.new(48)
 
+# setup a new output port with HIGH as initial state
+led = Cgpio.new(66, value: true)
+
 # setup a new input port
 switch = Cgpio.new(66, direction: :in)
 ```

@@ -6,8 +6,9 @@ class Cgpio::VirtualGpio < Cgpio::Gpio
         @value = false
         @events = {}
 
-        # set the initial direction
+        # set the initial direction and value
         self.direction = @options[:direction]
+        self.value = @options[:value]
     end
 
     def direction=(direction)
