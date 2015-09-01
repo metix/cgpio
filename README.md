@@ -11,8 +11,7 @@ led.on
 ```
 
 Tested with Linux-Kernel Version "4.1.6" on
-* [Beaglebone Black](http://beagleboard.org/black)  
-* [Raspberry Pi Model B+](https://www.raspberrypi.org/products/model-b-plus/)
+* [Beaglebone Black](http://beagleboard.org/black)
 
 WARN: the gem is not stable yet!
 

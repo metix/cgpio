@@ -2,8 +2,8 @@ class Cgpio::RealGpio < Cgpio::Gpio
 
     def initialize(nr, options)
         super(nr, options)
-        # this will export the pin
-        setup @nr
+
+        setup nr
 
         # set the initial direction
         self.direction = @options[:direction]
