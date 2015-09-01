@@ -1,6 +1,6 @@
 # Cgpio
 
-A simple GPIO Wrapper in Ruby (which uses C to access the SYSFS structures)
+A simple GPIO Wrapper in Ruby (which uses C memory mapping to access the GPIO)
 
 ```ruby
 require 'cgpio'
@@ -19,8 +19,10 @@ WARN: the gem is not stable yet!
 * set/get value
 * set/get direction
 * virtual GPIO
+* memory mapped GPIO access
 
 ## Installation
+This gem uses C extension, so you need build-essentials (gcc, make)
 ```
 gem install cgpio
 ```
