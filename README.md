@@ -1,6 +1,6 @@
 # Cgpio
 
-A simple GPIO Wrapper in Ruby (which uses C to access the SYSFS structures)
+A simple GPIO Wrapper in Ruby (which uses C memory mapping to access the GPIO)
 
 ```ruby
 require 'cgpio'
@@ -11,8 +11,7 @@ led.on
 ```
 
 Tested with Linux-Kernel Version "4.1.6" on
-* [Beaglebone Black](http://beagleboard.org/black)  
-* [Raspberry Pi Model B+](https://www.raspberrypi.org/products/model-b-plus/)
+* [Beaglebone Black](http://beagleboard.org/black)
 
 WARN: the gem is not stable yet!
 
@@ -20,8 +19,10 @@ WARN: the gem is not stable yet!
 * set/get value
 * set/get direction
 * virtual GPIO
+* memory mapped GPIO access
 
 ## Installation
+This gem uses C extension, so you need build-essentials (gcc, make)
 ```
 gem install cgpio
 ```
@@ -45,6 +46,9 @@ loop do led.value = switch.value end
 ```ruby
 # setup a new port (output is default)
 led = Cgpio.new(48)
+
+# setup a new output port with HIGH as initial state
+led = Cgpio.new(66, value: true)
 
 # setup a new input port
 switch = Cgpio.new(66, direction: :in)

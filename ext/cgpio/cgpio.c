@@ -1,45 +1,66 @@
 #include <ruby.h>
-#include "gpio.h"
+
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/types.h>
+
+/* direction types */
+#define GPIO_OUTPUT 0x01
+#define GPIO_INPUT 0x02
+
+/* register addresses */
+#define GPIO0_ADDR 0x44E07000
+#define GPIO1_ADDR 0x4804C000
+#define GPIO2_ADDR 0x481AC000
+#define GPIO3_ADDR 0x481AF000
+
+/* register offsets */
+#define OE_ADDR (0x134 / 4)
+#define GPIO_DATAOUT (0x13C / 4)
+#define GPIO_DATAIN (0x138 / 4)
 
 struct Cgpio
 {
-    struct Gpio *gpio;
+    int nr;
+    ulong *pinconf;
+    int offset;
 };
 
+struct GlobalConfig
+{
+    ulong *pinconfs[4];
+} config;
+
 static VALUE
-cgpio_setup(VALUE self, VALUE p_port)
+cgpio_setup(VALUE self, VALUE p_nr)
 {
     struct Cgpio *ptr;
-    struct Gpio *gpio;
+    int nr;
 
-    int port = NUM2INT(p_port);
+    nr = FIX2INT(p_nr);
 
     Data_Get_Struct(self, struct Cgpio, ptr);
 
-    gpio = gpio_setup(port);
-
-    if (gpio == NULL)
-            rb_raise(rb_eRuntimeError, "unable to export gpio %d", port);
-
-    ptr->gpio = gpio;
+    // precalculate some stuff
+    ptr->nr = nr;
+    ptr->pinconf = config.pinconfs[nr / 32];
+    ptr->offset = 1 << (nr % 32);
 
     return self;
 }
 
 static VALUE
-cgpio_set_direction(VALUE self, VALUE p_dir)
+cgpio_set_direction(VALUE self, VALUE dir)
 {
     struct Cgpio *ptr;
-    int dir;
-
-    dir = NUM2INT(p_dir);
 
     Data_Get_Struct(self, struct Cgpio, ptr);
 
-    if (gpio_mode(ptr->gpio, dir) == -1)
-    {
-            rb_raise(rb_eRuntimeError, "unable to set direction of gpio");
-    }
+    if (NUM2INT(dir) == GPIO_OUTPUT)
+        ptr->pinconf[OE_ADDR] &= ~ptr->offset;
+    else
+        ptr->pinconf[OE_ADDR] |= ptr->offset;
 
     return self;
 }
@@ -48,19 +69,13 @@ static VALUE
 cgpio_get_direction(VALUE self)
 {
     struct Cgpio *ptr;
-    int dir;
 
     Data_Get_Struct(self, struct Cgpio, ptr);
 
-    dir = gpio_get_mode(ptr->gpio);
-
-    if (dir == -1)
-    {
-        rb_raise(rb_eRuntimeError, "unable to read direction of gpio");
-        return self;
-    }
-
-    return INT2NUM(dir);
+    if (ptr->pinconf[OE_ADDR] & ptr->offset)
+        return INT2NUM(GPIO_INPUT);
+    else
+        return INT2NUM(GPIO_OUTPUT);
 }
 
 static VALUE
@@ -70,43 +85,27 @@ cgpio_set_value(VALUE self, VALUE p_value)
 
     Data_Get_Struct(self, struct Cgpio, ptr);
 
-    if (p_value != Qtrue && p_value != Qfalse)
-    {
-        rb_raise(rb_eArgError, "gpio value have to be true or false");
-        return self;
-    }
+    if (p_value == Qtrue)
+        ptr->pinconf[GPIO_DATAOUT] |= ptr->offset;
+    else if (p_value == Qfalse)
+        ptr->pinconf[GPIO_DATAOUT] &= ~ptr->offset;
+    else
+        rb_raise(rb_eRuntimeError, "gpio value have to be true or false");
 
-    if (gpio_set(ptr->gpio, RTEST(p_value)) == -1)
-        rb_raise(rb_eRuntimeError, "unable to set gpio value");
-
-    return self;
+    return p_value;
 }
 
 static VALUE
 cgpio_get_value(VALUE self)
 {
     struct Cgpio *ptr;
-    int value;
 
     Data_Get_Struct(self, struct Cgpio, ptr);
-    value = gpio_get(ptr->gpio);
 
-    if (value == -1)
-        rb_raise(rb_eRuntimeError, "unable to read gpio value");
-    else if (value)
+    if (ptr->pinconf[GPIO_DATAIN] & ptr->offset)
         return Qtrue;
-
-    return Qfalse;
-}
-
-static void
-cgpio_free(void *p)
-{
-    struct Cgpio *ptr = p;
-
-    // only close but dont unexport the gpio
-    if (ptr->gpio)
-        gpio_close(ptr->gpio, 0);
+    else
+        return Qfalse;
 }
 
 static VALUE
@@ -115,9 +114,7 @@ cgpio_alloc(VALUE klass)
     VALUE obj;
     struct Cgpio *ptr;
 
-    obj = Data_Make_Struct(klass, struct Cgpio, NULL, cgpio_free, ptr);
-
-    ptr->gpio = NULL;
+    obj = Data_Make_Struct(klass, struct Cgpio, NULL, NULL, ptr);
 
     return obj;
 }
@@ -127,6 +124,7 @@ Init_cgpio()
 {
     VALUE module_Cgpio;
     VALUE class_RealGpio;
+    int fd;
 
     // get module
     module_Cgpio = rb_const_get(rb_cObject, rb_intern("Cgpio"));
@@ -140,4 +138,24 @@ Init_cgpio()
     rb_define_private_method(class_RealGpio, "get_direction", cgpio_get_direction, 0);
     rb_define_method(class_RealGpio, "value=", cgpio_set_value, 1);
     rb_define_method(class_RealGpio, "value", cgpio_get_value, 0);
+
+    fd = open("/dev/mem",O_RDWR | O_SYNC);
+	if (fd == -1)
+	{
+		rb_raise(rb_eRuntimeError, "could not open /dev/mem (used for gpio memory mapping)");
+		return;
+	}
+
+    // map all the gpio memory addresses
+    config.pinconfs[0] = (ulong*) mmap(NULL, 0x1000, PROT_READ | PROT_WRITE,
+		MAP_SHARED, fd, GPIO0_ADDR);
+
+    config.pinconfs[1] = (ulong*) mmap(NULL, 0x1000, PROT_READ | PROT_WRITE,
+		MAP_SHARED, fd, GPIO1_ADDR);
+
+    config.pinconfs[2] = (ulong*) mmap(NULL, 0x1000, PROT_READ | PROT_WRITE,
+		MAP_SHARED, fd, GPIO2_ADDR);
+
+    config.pinconfs[3] = (ulong*) mmap(NULL, 0x1000, PROT_READ | PROT_WRITE,
+		MAP_SHARED, fd, GPIO3_ADDR);
 }

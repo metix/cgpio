@@ -3,7 +3,8 @@ class Cgpio::Gpio
 
     def initialize(nr, options)
         @options = {
-            direction: :out
+            direction: :out,
+            value: false
         }.merge(options)
 
         @nr = nr

@@ -3,11 +3,13 @@ class Cgpio::VirtualGpio < Cgpio::Gpio
     def initialize(nr, options)
         super(nr, options)
 
-        @value = false
         @events = {}
 
-        # set the initial direction
+        # set the initial direction and value
         self.direction = @options[:direction]
+        if direction == :out
+            self.value = @options[:value]
+        end
     end
 
     def direction=(direction)
