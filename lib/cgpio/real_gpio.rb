@@ -7,7 +7,9 @@ class Cgpio::RealGpio < Cgpio::Gpio
 
         # set the initial direction and value
         self.direction = @options[:direction]
-        self.value = @options[:value]
+        if direction == :out
+            self.value = @options[:value]
+        end
     end
 
     def direction=(direction)
